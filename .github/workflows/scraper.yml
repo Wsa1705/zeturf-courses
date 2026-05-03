@@ -1,0 +1,33 @@
+name: ZEturf Scraper J+1
+
+on:
+  schedule:
+    - cron: '0 18 * * *'   # 18h UTC = 20h Paris (heure été)
+  workflow_dispatch:         # bouton "Run" manuel sur GitHub
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 openpyxl
+
+      - name: Run scraper
+        run: python zeturf_scraper.py
+
+      - name: Commit courses.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add courses.json
+          git diff --cached --quiet || git commit -m "courses J+1 $(date '+%Y-%m-%d')"
+          git push
