@@ -5,6 +5,9 @@ on:
     - cron: '0 18 * * *'   # 18h UTC = 20h Paris (heure été)
   workflow_dispatch:         # bouton "Run" manuel sur GitHub
 
+permissions:
+  contents: write
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
